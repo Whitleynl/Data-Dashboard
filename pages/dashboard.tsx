@@ -1,6 +1,9 @@
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { ApexOptions } from 'apexcharts';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -26,6 +29,8 @@ ChartJS.register(
   Legend
 );
 
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
+
 // Define the structure of the chart data
 interface ChartData {
   labels: string[];
@@ -39,18 +44,25 @@ interface ChartData {
   }[];
 }
 
+interface CandlestickChartData {
+  series: {data: {x: string; y: number[]}[]}[];
+    options: ApexOptions
+}
+
 const Dashboard = () => {
   // State to store data from API, with ChartData or null
   const [lineData, setLineData] = useState<ChartData | null>(null);
   const [barData, setBarData] = useState<ChartData | null>(null);
   const [pieData, setPieData] = useState<ChartData | null>(null);
+  const [candlestickData, setCandlestickData] = useState<CandlestickChartData | null>(null);
 
   // Function to fetch data from Django API
   const fetchData = async () => {
     try {
-      const lineResponse = await axios.get('http://127.0.0.1:8000/api/line-chart-data/');
-      const barResponse = await axios.get('http://127.0.0.1:8000/api/bar-chart-data/');
-      const pieResponse = await axios.get('http://127.0.0.1:8000/api/pie-chart-data/');
+      const lineResponse = await axios.get('http://localhost:8000/api/line-chart-data/');
+      const barResponse = await axios.get('http://localhost:8000/api/bar-chart-data/');
+      const pieResponse = await axios.get('http://localhost:8000/api/pie-chart-data/')
+      const candlestickResponse = await axios.get('http://localhost:8000/api/candlestick-data/')
       
       // Set the fetched data into state
       setLineData({
@@ -95,6 +107,25 @@ const Dashboard = () => {
           },
         ],
       });
+    
+      setCandlestickData({
+        series: [
+          {
+            data: candlestickResponse.data.data.map((entry: any) => ({
+              x: entry.x,
+              y: [entry.open, entry.high, entry.low, entry.close],  
+            }))
+          },
+        ],
+        options: {
+          chart: {
+            type: 'candlestick',
+          },
+          xaxis: {
+            categories: candlestickResponse.data.data.map((entry: any) => entry.x),
+          },
+        },
+      });
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -117,6 +148,18 @@ const Dashboard = () => {
 
       <h2>Pie Chart</h2>
       {pieData ? <Pie data={pieData} /> : <p>Loading...</p>}
+
+      <h2>Candlestick Chart</h2>
+      {candlestickData ? (
+        <ReactApexChart 
+        options={candlestickData.options} 
+        series={candlestickData.series} 
+        type="candlestick" 
+        height={350} 
+      /> 
+      ) : (
+      <p>Loading...</p>
+      )}
     </div>
   );
 };
