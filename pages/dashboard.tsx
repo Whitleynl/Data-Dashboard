@@ -138,28 +138,38 @@ const Dashboard = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Dashboard</h1>
+      <h1 style={{ textAlign: 'center', fontSize: '2.5rem', fontWeight: 'bold' }}> 
+        Dashboard
+      </h1>
 
       <h2>Line Chart</h2>
-      {lineData ? <Line data={lineData} /> : <p>Loading...</p>}
+      <div style={{ width: '80%', margin: '0 auto' }}>
+        {lineData ? <Line data={lineData} width={400} height={300} /> : <p>Loading...</p>}
+      </div>
 
       <h2>Bar Chart</h2>
-      {barData ? <Bar data={barData} /> : <p>Loading...</p>}
+      <div style={{ width: '80%', margin: '0 auto' }}>
+        {barData ? <Bar data={barData} width={400} height={300} /> : <p>Loading...</p>}
+      </div>
 
       <h2>Pie Chart</h2>
-      {pieData ? <Pie data={pieData} /> : <p>Loading...</p>}
+      <div style={{ width: '80%', margin: '0 auto' }}>
+        {pieData ? <Pie data={pieData} width={400} height={300} /> : <p>Loading...</p>}
+      </div>
 
       <h2>Candlestick Chart</h2>
-      {candlestickData ? (
-        <ReactApexChart 
-        options={candlestickData.options} 
-        series={candlestickData.series} 
-        type="candlestick" 
-        height={350} 
-      /> 
-      ) : (
-      <p>Loading...</p>
-      )}
+      <div style={{ width: '80%', margin: '0 auto' }}>
+        {candlestickData ? (
+          <ReactApexChart
+            options={candlestickData.options}
+            series={candlestickData.series}
+            type="candlestick"
+            height={300} 
+          />
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
     </div>
   );
 };
