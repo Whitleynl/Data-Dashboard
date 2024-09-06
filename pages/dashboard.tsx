@@ -40,7 +40,7 @@ interface ChartData {
 }
 
 const Dashboard = () => {
-  // State to store data fetched from the API, with ChartData type or null
+  // State to store data from API, with ChartData or null
   const [lineData, setLineData] = useState<ChartData | null>(null);
   const [barData, setBarData] = useState<ChartData | null>(null);
   const [pieData, setPieData] = useState<ChartData | null>(null);
@@ -48,9 +48,9 @@ const Dashboard = () => {
   // Function to fetch data from Django API
   const fetchData = async () => {
     try {
-      const lineResponse = await axios.get('http://localhost:8000/api/line/');
-      const barResponse = await axios.get('http://localhost:8000/api/bar/');
-      const pieResponse = await axios.get('http://localhost:8000/api/pie/');
+      const lineResponse = await axios.get('http://127.0.0.1:8000/api/line-chart-data/');
+      const barResponse = await axios.get('http://127.0.0.1:8000/api/bar-chart-data/');
+      const pieResponse = await axios.get('http://127.0.0.1:8000/api/pie-chart-data/');
       
       // Set the fetched data into state
       setLineData({
@@ -79,14 +79,7 @@ const Dashboard = () => {
               'rgba(153, 102, 255, 0.2)',
               'rgba(255, 159, 64, 0.2)',
             ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)',
-            ],
+            borderColor:'rgba(75, 192, 192, 1)', 
             borderWidth: 1,
           },
         ],
